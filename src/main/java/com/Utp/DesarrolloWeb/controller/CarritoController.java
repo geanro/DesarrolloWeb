@@ -18,8 +18,8 @@ public class CarritoController {
     }
 
     @PostMapping("/agregar")
-    public String agregar(@RequestBody Producto producto, @RequestParam int cantidad) {
-        return service.agregar(producto, cantidad);
+    public String agregar(@RequestParam int idProducto, @RequestParam int cantidad) {
+        return service.agregar(idProducto, cantidad);
     }
 
     @GetMapping

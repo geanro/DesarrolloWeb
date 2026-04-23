@@ -1,4 +1,5 @@
 package com.Utp.DesarrolloWeb.service;
+
 import com.Utp.DesarrolloWeb.model.Carrito;
 import com.Utp.DesarrolloWeb.model.Producto;
 import org.springframework.stereotype.Service;
@@ -11,10 +12,19 @@ public class CarritoService {
 
     private List<Carrito> carrito = new ArrayList<>();
 
-    public String agregar(Producto producto, int cantidad) {
+    private final ProductoService productoService;
 
+    public CarritoService(ProductoService productoService) {
+        this.productoService = productoService;
+    }
+
+    public String agregar(int idProducto, int cantidad) {
+        Producto producto = productoService.buscarPorId(idProducto);
+        if (producto == null) {
+            return "Producto no encontrado";
+        }
         for (Carrito item : carrito) {
-            if (item.getProducto().getId() == producto.getId()) {
+            if (item.getProducto().getId() == idProducto) {
                 item.setCantidad(item.getCantidad() + cantidad);
                 return "Cantidad actualizada";
             }
@@ -28,8 +38,12 @@ public class CarritoService {
     }
 
     public String eliminar(int idProducto) {
-        carrito.removeIf(item -> item.getProducto().getId() == idProducto);
-        return "Producto eliminado";
+        boolean eliminado = carrito.removeIf(item -> item.getProducto().getId() == idProducto);
+        if (eliminado) {
+            return "Producto eliminado";
+        } else {
+            return "Producto no encontrado en el carrito";
+        }
     }
 
     public double total() {
