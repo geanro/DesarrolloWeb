@@ -9,5 +9,5 @@ public class LoginService {
         // Lógica de negocio: validación de credenciales
         // Credenciales fijas
         return "adminZapatos".equals(username) && "clave123".equals(password);
-    }
+    } 
 }
