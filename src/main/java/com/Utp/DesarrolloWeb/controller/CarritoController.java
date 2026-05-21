@@ -1,10 +1,8 @@
 package com.Utp.DesarrolloWeb.controller;
 
 import com.Utp.DesarrolloWeb.model.Carrito;
-import com.Utp.DesarrolloWeb.model.Producto;
 import com.Utp.DesarrolloWeb.service.CarritoService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -18,7 +16,7 @@ public class CarritoController {
     }
 
     @PostMapping("/agregar")
-    public String agregar(@RequestParam int idProducto, @RequestParam int cantidad) {
+    public String agregar(@RequestParam Long idProducto, @RequestParam int cantidad) {
         return service.agregar(idProducto, cantidad);
     }
 
@@ -28,7 +26,7 @@ public class CarritoController {
     }
 
     @DeleteMapping("/{id}")
-    public String eliminar(@PathVariable int id) {
+    public String eliminar(@PathVariable Long id) { 
         return service.eliminar(id);
     }
 

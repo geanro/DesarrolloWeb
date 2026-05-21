@@ -2,58 +2,59 @@ package com.Utp.DesarrolloWeb.service;
 
 import com.Utp.DesarrolloWeb.model.Carrito;
 import com.Utp.DesarrolloWeb.model.Producto;
+import com.Utp.DesarrolloWeb.repository.CarritoRepository;
+import com.Utp.DesarrolloWeb.repository.ProductoRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
 public class CarritoService {
 
-    private List<Carrito> carrito = new ArrayList<>();
+    private final CarritoRepository carritoRepository;
+    private final ProductoRepository productoRepository;
 
-    private final ProductoService productoService;
-
-    public CarritoService(ProductoService productoService) {
-        this.productoService = productoService;
+    public CarritoService(CarritoRepository carritoRepository, ProductoRepository productoRepository) {
+        this.carritoRepository = carritoRepository;
+        this.productoRepository = productoRepository;
     }
 
-    public String agregar(int idProducto, int cantidad) {
-        Producto producto = productoService.buscarPorId(idProducto);
-        if (producto == null) {
-            return "Producto no encontrado";
+    @Transactional
+    public String agregar(Long idProducto, int cantidad) {
+        Producto producto = productoRepository.findById(idProducto).orElse(null);
+        if (producto == null) return "Producto no encontrado";
+
+        Carrito itemExistente = carritoRepository.findByProductoId(idProducto);
+        if (itemExistente != null) {
+            itemExistente.setCantidad(itemExistente.getCantidad() + cantidad);
+            carritoRepository.save(itemExistente);
+            return "Cantidad actualizada";
         }
-        for (Carrito item : carrito) {
-            if (item.getProducto().getId() == idProducto) {
-                item.setCantidad(item.getCantidad() + cantidad);
-                return "Cantidad actualizada";
-            }
-        }
-        carrito.add(new Carrito(producto, cantidad));
+        carritoRepository.save(new Carrito(producto, cantidad));
         return "Producto agregado";
     }
 
     public List<Carrito> listar() {
-        return carrito;
+        return carritoRepository.findAll();
     }
 
-    public String eliminar(int idProducto) {
-        boolean eliminado = carrito.removeIf(item -> item.getProducto().getId() == idProducto);
-        if (eliminado) {
+    @Transactional
+    public String eliminar(Long idProducto) {
+        Carrito item = carritoRepository.findByProductoId(idProducto);
+        if (item != null) {
+            carritoRepository.delete(item);
             return "Producto eliminado";
-        } else {
-            return "Producto no encontrado en el carrito";
         }
+        return "Producto no encontrado en el carrito";
     }
 
     public double total() {
-        return carrito.stream()
-                .mapToDouble(Carrito::getSubtotal)
-                .sum();
+        return carritoRepository.findAll().stream().mapToDouble(Carrito::getSubtotal).sum();
     }
 
+    @Transactional
     public String vaciar() {
-        carrito.clear();
+        carritoRepository.deleteAll();
         return "Carrito vacío";
     }
 }
