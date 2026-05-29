@@ -2,10 +2,14 @@ package com.Utp.DesarrolloWeb.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "detalle_pedidos")
 public class DetallePedido {
@@ -16,12 +20,12 @@ public class DetallePedido {
     private Long idDetalle;
 
     @ManyToOne
-    @JoinColumn(name = "pedido_id", nullable = false)
+    @JoinColumn(name = "pedido_id", referencedColumnName = "id_pedido", nullable = false)
     @JsonIgnore
     private Pedido pedido;
 
     @ManyToOne
-    @JoinColumn(name = "producto_id", nullable = false)
+    @JoinColumn(name = "producto_id",referencedColumnName = "id", nullable = false)
     private Producto producto;
 
     @Column(name = "cantidad", nullable = false)

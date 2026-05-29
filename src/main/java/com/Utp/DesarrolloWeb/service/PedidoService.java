@@ -58,4 +58,7 @@ public class PedidoService {
         return pedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
     }
+    public List<Pedido> buscarPorMontoMayor(double monto){
+        return pedidoRepository.buscarPorMontoMayor(monto);
+    }
 }

@@ -23,6 +23,7 @@ public class LoginController {
             String token = jwtUtil.generarToken(username);
             return ResponseEntity.ok(Map.of("token", token));
         }
-        return ResponseEntity.status(401).body(Map.of("error", "Credenciales incorrectas"));
+        return ResponseEntity.status(401).body(Map.of("error",
+                "Credenciales incorrectas"));
     }
 }
